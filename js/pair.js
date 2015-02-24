@@ -1,0 +1,1 @@
+function Pair(t,i){this.x=t,this.y=i}Pair.prototype.rotate=function(){var t=this.x;this.x=(this.y+3)%4,this.y=(t+3)%4},Pair.prototype.display=function(){return"("+this.x+", "+this.y+")"};

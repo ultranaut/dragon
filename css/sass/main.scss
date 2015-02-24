@@ -1,0 +1,10 @@
+$body-color: #600;
+$font-color: #fff;
+
+body {
+  background-color: $body-color;
+  color: $font-color;
+  font-family: monospace;
+  font-size: 1.6em;
+  padding: 40px;
+}

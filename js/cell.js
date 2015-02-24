@@ -1,0 +1,1 @@
+function Cell(t){this.data=t}Cell.prototype.rotate=function(){var t;return"number"==typeof this.data?this.data=(this.data+3)%4:Array.isArray(this.data)&&(t=this.data[0],this.data[0]=(this.data[1]+3)%4,this.data[1]=(t+3)%4),!0};
