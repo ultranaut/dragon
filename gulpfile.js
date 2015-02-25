@@ -11,48 +11,55 @@ var uglify = require('gulp-uglify');
 var sass = require('gulp-sass');
 
 var config = {
-  jsFilesSrc: 'js/src/**/*.js',
-  jsFilesDest: 'js/',
-  jsHintRules: [],
+  js: {
+    src: 'js/src/**/*.js',
+    dest: 'js/',
+    jsHintRules: []
+    },
 
-  cssFilesSrc: 'css/sass/**/*.scss',
-  cssFilesDest: 'css/',
-  sassConfig: {
-    outputStyle: 'compressed'
+  css: {
+    src: 'css/sass/**/*.scss',
+    dest: 'css/',
+    sassConfig: {
+      outputStyle: 'compressed'
+      }
     }
-};
+  };
 
-/* --- javascript -------------------------------------------------- */
-gulp.task('js-hint', function () {
-  gulp.src(config.jsFilesSrc)
-      .pipe(plumber())
-      .pipe(jshint(config.jsHintRules))
-      .pipe(jshint.reporter('jshint-stylish'))
-      .pipe(jshint.reporter('fail'))
-      .on('error', notify.onError({ message: 'mistakes were made.' }));
-});
+  /* --- javascript -------------------------------------------------- */
+  gulp.task('lint', function () {
+    'use strict';
+    gulp.src(config.js.src)
+        .pipe(plumber())
+        .pipe(jshint(config.jsHintRules))
+        .pipe(jshint.reporter('jshint-stylish'))
+        .pipe(jshint.reporter('fail'))
+        .on('error', notify.onError({
+          message: 'There were lint errors.'
+        }));
+  });
 
-gulp.task('minify', function () {
-  gulp.src(config.jsFilesSrc)
-      .pipe(plumber())
-      .pipe(uglify())
-      .pipe(gulp.dest(config.jsFilesDest))
-      .pipe(livereload());
-});
+  gulp.task('minify', function () {
+    gulp.src(config.js.src)
+        .pipe(plumber())
+        .pipe(uglify())
+        .pipe(gulp.dest(config.js.dest))
+        .pipe(livereload());
+  });
 
-gulp.task('javascript', ['js-hint', 'minify']);
-// gulp.task('javascript', function () {
-//   gulp.src('js/*.js')
-//       .pipe(livereload());
-// });
+  gulp.task('javascript', ['lint', 'minify']);
+  // gulp.task('javascript', function () {
+  //   gulp.src('js/*.js')
+  //       .pipe(livereload());
+  // });
 
 
-/* --- css --------------------------------------------------------- */
-gulp.task('css', function () {
-  gulp.src(config.cssFilesSrc)
-      .pipe(plumber())
-      .pipe(sass(config.sassConfig))
-      .pipe(gulp.dest(config.cssFilesDest))
+  /* --- css --------------------------------------------------------- */
+  gulp.task('css', function () {
+    gulp.src(config.css.src)
+        .pipe(plumber())
+        .pipe(sass(config.css.sassConfig))
+      .pipe(gulp.dest(config.css.dest))
       .pipe(livereload());
 });
 
@@ -67,9 +74,9 @@ gulp.task('html', function () {
 /* --- watch ------------------------------------------------------- */
 gulp.task('watch', function () {
   livereload.listen();
-  gulp.watch(config.jsFilesSrc, ['javascript']);
+  gulp.watch(config.js.src, ['javascript']);
   // gulp.watch('js/*.js', ['javascript']);
-  gulp.watch(config.cssFilesSrc, ['css']);
+  gulp.watch(config.css.src, ['css']);
   gulp.watch('./*.html', ['html']);
 
 });
