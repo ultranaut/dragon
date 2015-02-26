@@ -1,1 +1,1 @@
-var d=new Dragon;d.show(),console.log("-------------------------"),d.rotate(),d.show(),console.log("-------------------------");
+"use strict";var d=new Dragon;d.show(),console.log("-------------------------"),d.rotate(),d.show(),console.log("-------------------------");
