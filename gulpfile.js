@@ -7,6 +7,7 @@ var livereload = require('gulp-livereload');
 
 var jshint = require('gulp-jshint');
 var uglify = require('gulp-uglify');
+var babel = require('gulp-babel');
 
 var sass = require('gulp-sass');
 
@@ -42,6 +43,7 @@ var config = {
   gulp.task('minify', function () {
     gulp.src(config.js.src)
         .pipe(plumber())
+        .pipe(babel())
         .pipe(uglify())
         .pipe(gulp.dest(config.js.dest))
         .pipe(livereload());
