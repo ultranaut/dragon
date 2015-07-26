@@ -1,9 +1,10 @@
 /* jshint node: true */
+'use strict';
 
 var gulp = require('gulp');
+var connect = require('gulp-connect');
 var plumber = require('gulp-plumber');
 var notify = require('gulp-notify');
-var livereload = require('gulp-livereload');
 
 var jshint = require('gulp-jshint');
 var uglify = require('gulp-uglify');
@@ -27,29 +28,36 @@ var config = {
     }
   };
 
-  /* --- javascript -------------------------------------------------- */
-  gulp.task('lint', function () {
-    'use strict';
-    gulp.src(config.js.src)
-        .pipe(plumber())
-        .pipe(jshint(config.jsHintRules))
-        .pipe(jshint.reporter('jshint-stylish'))
-        .pipe(jshint.reporter('fail'))
-        .on('error', notify.onError({
-          message: 'There were lint errors.'
-        }));
+gulp.task('connect', function () {
+  connect.server({
+    root: '.',
+    port: 8000,
+    livereload: true
   });
+});
 
-  gulp.task('minify', function () {
-    gulp.src(config.js.src)
-        .pipe(plumber())
-        .pipe(babel())
-        .pipe(uglify())
-        .pipe(gulp.dest(config.js.dest))
-        .pipe(livereload());
-  });
+/* --- javascript -------------------------------------------------- */
+gulp.task('lint', function () {
+  gulp.src(config.js.src)
+      .pipe(plumber())
+      .pipe(jshint(config.jsHintRules))
+      .pipe(jshint.reporter('jshint-stylish'))
+      .pipe(jshint.reporter('fail'))
+      .on('error', notify.onError({
+        message: 'There were lint errors.'
+      }));
+});
 
-  gulp.task('javascript', ['lint', 'minify']);
+gulp.task('minify', function () {
+  gulp.src(config.js.src)
+      .pipe(plumber())
+      .pipe(babel())
+      .pipe(uglify())
+      .pipe(gulp.dest(config.js.dest))
+      .pipe(connect.reload());
+});
+
+gulp.task('javascript', ['lint', 'minify']);
   // gulp.task('javascript', function () {
   //   gulp.src('js/*.js')
   //       .pipe(livereload());
@@ -57,25 +65,24 @@ var config = {
 
 
   /* --- css --------------------------------------------------------- */
-  gulp.task('css', function () {
-    gulp.src(config.css.src)
-        .pipe(plumber())
-        .pipe(sass(config.css.sassConfig))
-      .pipe(gulp.dest(config.css.dest))
-      .pipe(livereload());
+gulp.task('css', function () {
+  gulp.src(config.css.src)
+    .pipe(plumber())
+    .pipe(sass(config.css.sassConfig))
+    .pipe(gulp.dest(config.css.dest))
+    .pipe(connect.reload());
 });
 
 /* --- html -------------------------------------------------------- */
 gulp.task('html', function () {
   gulp.src('./*.html')
       .pipe(plumber())
-      .pipe(livereload());
+      .pipe(connect.reload());
 });
 
 
 /* --- watch ------------------------------------------------------- */
 gulp.task('watch', function () {
-  livereload.listen();
   gulp.watch(config.js.src, ['javascript']);
   // gulp.watch('js/*.js', ['javascript']);
   gulp.watch(config.css.src, ['css']);
@@ -85,4 +92,4 @@ gulp.task('watch', function () {
 
 
 /* --- main -------------------------------------------------------- */
-gulp.task('default', ['javascript', 'css', 'html', 'watch']);
+gulp.task('default', ['connect', 'javascript', 'css', 'html', 'watch']);
