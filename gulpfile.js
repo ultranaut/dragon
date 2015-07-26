@@ -4,9 +4,8 @@
 var gulp = require('gulp');
 var connect = require('gulp-connect');
 var plumber = require('gulp-plumber');
-var notify = require('gulp-notify');
 
-var jshint = require('gulp-jshint');
+var lint = require('gulp-eslint');
 var uglify = require('gulp-uglify');
 var babel = require('gulp-babel');
 
@@ -39,22 +38,19 @@ gulp.task('connect', function () {
 /* --- javascript -------------------------------------------------- */
 gulp.task('lint', function () {
   gulp.src(config.js.src)
-      .pipe(plumber())
-      .pipe(jshint(config.jsHintRules))
-      .pipe(jshint.reporter('jshint-stylish'))
-      .pipe(jshint.reporter('fail'))
-      .on('error', notify.onError({
-        message: 'There were lint errors.'
-      }));
+    .pipe(plumber())
+    .pipe(lint())
+    .pipe(lint.formatEach())
+    .pipe(connect.reload());
 });
 
 gulp.task('minify', function () {
   gulp.src(config.js.src)
-      .pipe(plumber())
-      .pipe(babel())
-      .pipe(uglify())
-      .pipe(gulp.dest(config.js.dest))
-      .pipe(connect.reload());
+    .pipe(plumber())
+    .pipe(babel())
+    .pipe(uglify())
+    .pipe(gulp.dest(config.js.dest))
+    .pipe(connect.reload());
 });
 
 gulp.task('javascript', ['lint', 'minify']);

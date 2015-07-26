@@ -1,3 +1,5 @@
+'use strict';
+
 function Pair(x, y) {
   this.x = x;
   this.y = y;
@@ -11,5 +13,5 @@ Pair.prototype.rotate = function () {
 };
 
 Pair.prototype.display = function () {
-  return '(' + this.x +', ' + this.y + ')';
+  return '(' + this.x + ', ' + this.y + ')';
 };
